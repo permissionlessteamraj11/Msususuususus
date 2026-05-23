@@ -1,4 +1,5 @@
 import os
+import asyncio
 from pyrogram import filters
 from pyrogram.types import Message
 import yt_dlp
@@ -20,9 +21,17 @@ async def song_downloader(client, message: Message):
     }
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(f"ytsearch:{query}", download=True)["entries"][0]
-            file_path = ydl.prepare_filename(info)
+        def download():
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(f"ytsearch:{query}", download=True)
+                if not info or not info.get("entries"):
+                    return None, None
+                entry = info["entries"][0]
+                return entry, ydl.prepare_filename(entry)
+
+        info, file_path = await asyncio.to_thread(download)
+        if not info:
+            return await m.edit("Could not find any results.")
 
         await m.edit("Uploading...")
         if is_video:

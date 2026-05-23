@@ -33,3 +33,8 @@ async def set_play_type_cb(client, query: CallbackQuery):
     # Refresh panel
     await settings_panel(client, query.message)
     await query.message.delete()
+
+@filters.on_callback_query(filters.regex("close_settings"))
+async def close_settings_cb(client, query: CallbackQuery):
+    await query.message.delete()
+    await query.answer("Settings closed.")

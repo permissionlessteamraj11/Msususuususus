@@ -1,4 +1,4 @@
-from pyrogram import filters
+from pyrogram import filters, enums
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 import config
 from Music.core.call import call
@@ -13,7 +13,7 @@ async def is_admin(chat_id, user_id, client):
         return True
     try:
         member = await client.get_chat_member(chat_id, user_id)
-        return member.status in ("administrator", "creator")
+        return member.status in (enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER)
     except:
         return False
 
@@ -27,7 +27,7 @@ async def play_command(client, message: Message):
         return await message.reply_text("Please provide a song name to play!")
 
     is_video = message.command[0] == "vplay"
-    m = await message.reply_text(config.PLAY_SEARCH.format(query))
+    m = await message.reply_text(config.PLAY_SEARCH.replace("{0}", query))
 
     # Handle Spotify
     if "spotify.com" in query:
@@ -130,6 +130,7 @@ async def control_commands(client, message: Message):
         q.insert(0, current)
         await clear_queue(chat_id)
         for i, s in enumerate(q, start=1):
+            s.pop("_id", None)
             await queuedb.insert_one({**s, "position": i})
         await message.reply_text("🔀 Queue shuffled.")
     elif command == "replay":
@@ -137,6 +138,28 @@ async def control_commands(client, message: Message):
         if q:
             await call.join_call(chat_id, q[0]["link"], video=q[0]["video"])
             await message.reply_text("🔄 Replaying...")
+
+@filters.on_message(filters.command("queue") & filters.group)
+async def queue_command(client, message: Message):
+    if await is_blacklisted_user(message.from_user.id):
+        return
+
+    chat_id = message.chat.id
+    q = await get_queue(chat_id)
+    if not q:
+        return await message.reply_text("The queue is empty.")
+
+    text = "🎵 **Current Queue:**\n\n"
+    count = 0
+    for i, s in enumerate(q, start=1):
+        line = f"{i}. {s['title']}\n"
+        if len(text) + len(line) > 4000:
+            text += f"\n... and {len(q) - count} more songs."
+            break
+        text += line
+        count += 1
+
+    await message.reply_text(text)
 
 @filters.on_message(filters.command("lyrics"))
 async def lyrics_command(client, message: Message):

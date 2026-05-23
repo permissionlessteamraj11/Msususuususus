@@ -28,34 +28,42 @@ async def broadcast_command(client, message: Message):
             pass
     await m.edit(f"✅ Broadcasted to {count} users.")
 
+async def get_id(message: Message):
+    if len(message.command) < 2:
+        return None
+    try:
+        return int(message.command[1])
+    except ValueError:
+        return None
+
 @filters.on_message(filters.command("addpremium") & filters.user(config.OWNER_ID))
 async def add_premium(client, message: Message):
-    if len(message.command) < 2:
+    user_id = await get_id(message)
+    if not user_id:
         return await message.reply_text("Usage: /addpremium [user_id]")
-    user_id = int(message.command[1])
     await add_premium_user(user_id)
     await message.reply_text(f"✅ User {user_id} added to premium.")
 
 @filters.on_message(filters.command("rmpremium") & filters.user(config.OWNER_ID))
 async def rm_premium(client, message: Message):
-    if len(message.command) < 2:
+    user_id = await get_id(message)
+    if not user_id:
         return await message.reply_text("Usage: /rmpremium [user_id]")
-    user_id = int(message.command[1])
     await remove_premium_user(user_id)
     await message.reply_text(f"✅ User {user_id} removed from premium.")
 
 @filters.on_message(filters.command("blacklist") & filters.user(config.OWNER_ID))
 async def blacklist_command(client, message: Message):
-    if len(message.command) < 2:
+    user_id = await get_id(message)
+    if not user_id:
         return await message.reply_text("Usage: /blacklist [user_id]")
-    user_id = int(message.command[1])
     await blacklist_user(user_id)
     await message.reply_text(f"✅ User {user_id} blacklisted.")
 
 @filters.on_message(filters.command("whitelist") & filters.user(config.OWNER_ID))
 async def whitelist_command(client, message: Message):
-    if len(message.command) < 2:
+    user_id = await get_id(message)
+    if not user_id:
         return await message.reply_text("Usage: /whitelist [user_id]")
-    user_id = int(message.command[1])
     await whitelist_user(user_id)
     await message.reply_text(f"✅ User {user_id} whitelisted.")
