@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 if os.path.exists(".env"):
     load_dotenv(".env")
 
-API_ID = int(os.getenv("API_ID", "0"))
+API_ID = int(os.getenv("API_ID") or "0")
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_DB_URI = os.getenv("MONGO_DB_URI")
-LOGGER_ID = int(os.getenv("LOGGER_ID", "-100"))
-OWNER_ID = int(os.getenv("OWNER_ID", "0"))
+LOGGER_ID = int(os.getenv("LOGGER_ID") or "-100")
+OWNER_ID = int(os.getenv("OWNER_ID") or "0")
 STRING_SESSION = os.getenv("STRING_SESSION")
 
 OWNER_USERNAME = os.getenv("OWNER_USERNAME", "The_LuckyX")
@@ -25,16 +25,16 @@ UPSTREAM_BRANCH = os.getenv("UPSTREAM_BRANCH", "main")
 
 MUST_JOIN = os.getenv("MUST_JOIN", "PritiSupport")
 
-DURATION_LIMIT = int(os.getenv("DURATION_LIMIT", "60"))
+DURATION_LIMIT = int(os.getenv("DURATION_LIMIT") or "60")
 AUTO_LEAVING_ASSISTANT = os.getenv("AUTO_LEAVING_ASSISTANT", "True")
-ASSISTANT_LEAVE_TIME = int(os.getenv("ASSISTANT_LEAVE_TIME", "5400"))
+ASSISTANT_LEAVE_TIME = int(os.getenv("ASSISTANT_LEAVE_TIME") or "5400")
 
-SONG_DOWNLOAD_DURATION = int(os.getenv("SONG_DOWNLOAD_DURATION", "180"))
-SONG_DOWNLOAD_DURATION_LIMIT = int(os.getenv("SONG_DOWNLOAD_DURATION_LIMIT", "180"))
-PLAYLIST_FETCH_LIMIT = int(os.getenv("PLAYLIST_FETCH_LIMIT", "25"))
+SONG_DOWNLOAD_DURATION = int(os.getenv("SONG_DOWNLOAD_DURATION") or "180")
+SONG_DOWNLOAD_DURATION_LIMIT = int(os.getenv("SONG_DOWNLOAD_DURATION_LIMIT") or "180")
+PLAYLIST_FETCH_LIMIT = int(os.getenv("PLAYLIST_FETCH_LIMIT") or "25")
 
-TG_AUDIO_FILESIZE_LIMIT = int(os.getenv("TG_AUDIO_FILESIZE_LIMIT", "104857600"))
-TG_VIDEO_FILESIZE_LIMIT = int(os.getenv("TG_VIDEO_FILESIZE_LIMIT", "1073741824"))
+TG_AUDIO_FILESIZE_LIMIT = int(os.getenv("TG_AUDIO_FILESIZE_LIMIT") or "104857600")
+TG_VIDEO_FILESIZE_LIMIT = int(os.getenv("TG_VIDEO_FILESIZE_LIMIT") or "1073741824")
 
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
